@@ -1,8 +1,10 @@
-import { createKnowledgeBase } from "@/services/knowledge-base.service";
-import { getProjectKnowledgeBases } from "@/services/knowledge-base.service";
-import { getKnowledgeBaseById } from "@/services/knowledge-base.service";
-import { updateKnowledgeBase } from "@/services/knowledge-base.service";
-import { deleteKnowledgeBase } from "@/services/knowledge-base.service";
+import {
+  createKnowledgeBase,
+  getProjectKnowledgeBases,
+  getKnowledgeBaseById,
+  updateKnowledgeBase,
+  deleteKnowledgeBase,
+} from "@/services/knowledge-base.service";
 import { ApiError } from "@/lib/api-error";
 import { successResponse } from "@/lib/api-response";
 import { handleError } from "@/lib/handle-error";
@@ -14,6 +16,7 @@ export async function createKnowledgeBaseController(request, authUser) {
     const name = body.name?.trim();
     const description = body.description?.trim() || "";
     const projectId = body.projectId;
+    const embeddingConfigId = body.embeddingConfigId || null;
 
     if (!name) {
       throw new ApiError(400, "Knowledge base name is required");
@@ -35,6 +38,7 @@ export async function createKnowledgeBaseController(request, authUser) {
       name,
       description,
       projectId,
+      embeddingConfigId,
       owner: authUser.userId,
     });
 
@@ -127,6 +131,10 @@ export async function updateKnowledgeBaseController(
       }
 
       updates.description = body.description.trim();
+    }
+
+    if (body.embeddingConfigId !== undefined) {
+      updates.embeddingConfig = body.embeddingConfigId;
     }
 
     if (Object.keys(updates).length === 0) {

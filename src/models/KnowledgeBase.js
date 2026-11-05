@@ -30,6 +30,25 @@ const knowledgeBaseSchema = new mongoose.Schema(
       index: true,
     },
 
+    // Reference to the active embedding profile for this knowledge base
+    embeddingConfig: {
+      type: mongoose.Schema.Types.ObjectId,
+      ref: "EmbeddingConfig",
+      default: null,
+    },
+
+    // Model name used for vector embeddings in this knowledge base
+    embeddingModel: {
+      type: String,
+      default: "text-embedding-3-small",
+    },
+
+    // Fixed vector dimensionality for this knowledge base (must match vector index)
+    embeddingDimensions: {
+      type: Number,
+      default: 1536,
+    },
+
     status: {
       type: String,
       enum: ["active", "archived"],
